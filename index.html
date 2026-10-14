@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Which Coraline Character Are You?</title>
+  <link rel="icon" type="image/png" href="assets/Logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    @font-face {
+      font-family: 'FontVamp';
+      src: url('assets/Fonts/Vampire Zone.ttf') format('truetype');
+    }
+
+    :root {
+      --font-title: "FontVamp", "Poppins", sans-serif;
+      --font-body: "Poppins", sans-serif;
+      --title-weight: 400;
+      --ink: #000181;
+      --indigo: #412cdf;
+      --night: #2a1fb5;
+      --gold: #ffd24a;
+      --cream: #ffebae;
+      --yellow: #ffc82f;
+      --thread: #0b0b3d;
+
+      box-sizing: border-box;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    .blk:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 3px;
+    }
+
+    body {
+      --p: 0;
+      font-family: var(--font-body);
+      line-height: 1.4;
+      color: #fff;
+      overflow: hidden;
+      background-color: #0e3288;
+      background-attachment: fixed;
+      background-image:
+        radial-gradient(ellipse at 80% 15%, rgba(111, 107, 243, 0.55) 0%, rgba(111, 107, 243, 0.18) 35%, transparent 70%),
+        radial-gradient(ellipse at 15% 35%, #412cdf 0%, transparent 65%),
+        radial-gradient(ellipse at 90% 60%, #162e9c 0%, transparent 65%),
+        radial-gradient(ellipse at 25% 90%, #162e9c 0%, transparent 60%);
+    }
+
+    .top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: calc(8px + env(safe-area-inset-top, 0px)) 14px 0;
+    }
+
+    .logo img {
+      display: block;
+      width: 65px;
+      height: auto;
+    }
+
+    .back {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      background: none;
+      font-family: var(--font-title);
+      font-size: 46px;
+      line-height: 0.75;
+      color: var(--gold);
+      -webkit-text-stroke: 4px var(--indigo);
+      paint-order: stroke fill;
+    }
+
+    body:not(.in-quiz) .back {
+      display: none;
+    }
+
+    body.revealing .top {
+      display: none;
+    }
+
+    .app {
+      position: relative;
+      height: 100dvh;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 58px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .view {
+      display: none;
+      min-height: 100%;
+    }
+
+    .view.on {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kb {
+      position: relative;
+      flex: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(var(--g), 0.3); }
+      50%      { box-shadow: 0 0 25px 5px rgba(var(--g), 0.9); }
+    }
+
+    .kb.glow {
+      animation: glowPulse 2s infinite ease-in-out;
+    }
+
+    .kb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    #cover {
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .stage {
+      --radius: calc(min(320px, 86vw) * 0.43);
+
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: min(320px, 86vw);
+      aspect-ratio: 1;
+    }
+
+    .orbit {
+      position: absolute;
+      inset: 0;
+      animation: spin 26s linear infinite;
+    }
+
+    .orbit .kb {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: rotate(var(--a)) translateY(calc(var(--radius) * -1));
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .cover-card {
+      width: 56%;
+      aspect-ratio: 4 / 5;
+      border: 3px solid #fff;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #023fcd, #412cdf 45%, #aa82ff 75%, #e8a0ff) center / cover;
+      box-shadow: 0 20px 50px rgba(0, 1, 129, 0.55);
+      animation: floaty 5s ease-in-out infinite;
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%      { transform: translateY(-10px) rotate(2deg); }
+    }
+
+    h1 {
+      max-width: 20ch;
+      margin: 0;
+      font-family: var(--font-title);
+      font-size: 25px;
+      font-weight: var(--title-weight);
+      line-height: 1.15;
+      text-wrap: balance;
+      color: var(--cream);
+      text-shadow: 0 3px 0 rgba(0, 1, 129, 0.55);
+    }
+
+    .subtitle {
+      max-width: 32ch;
+      margin: 0;
+      font-size: 12px;
+      color: #d3dafe;
+    }
+
+    .start {
+      position: relative;
+      margin-top: 6px;
+      padding: 10px 30px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 999px;
+      background: var(--yellow);
+      box-shadow: 0 10px 30px rgba(255, 200, 47, 0.4);
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--ink);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .start::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -60%;
+      width: 40%;
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+      animation: shine 2.6s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      to { left: 130%; }
+    }
+
+    @keyframes pulse {
+      50% { transform: scale(1.04); }
+    }
+
+    .frame {
+      position: relative;
+      margin-top: 46px;
+      padding: 6px;
+      border: 2px dashed rgba(255, 255, 255, 0.9);
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 8px 22px rgba(0, 1, 129, 0.28);
+    }
+
+    .tab {
+      position: absolute;
+      top: -38px;
+      left: 50%;
+      z-index: 3;
+      transform: translateX(-50%);
+      width: 170px;
+      height: auto;
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      padding: 22px 12px 12px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, #ffe9a6, #ffc82f);
+      box-shadow: 0 10px 24px rgba(0, 1, 129, 0.3);
+    }
+
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 42%;
+      z-index: 1;
+      display: block;
+      width: auto;
+      height: 18px;
+      transform: translateY(-50%);
+      filter: drop-shadow(1px 1px 0 var(--ink));
+      pointer-events: none;
+    }
+
+    .pbar {
+      --pg: 0;
+      --rot: 0deg;
+      --thumb: 47px;
+
+      position: relative;
+      height: 24px;
+      border: 3px solid var(--ink);
+      border-radius: 3px;
+      background: #1a1196;
+      box-shadow: 
+        0 0 0 2px #fff,
+        0 5px 0 2px var(--night);
+      }
+
+    .pfill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: calc(var(--pg) * 1%);
+      border-radius: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.55) 0 20%,
+        transparent 20% 70%,
+        rgba(0, 0, 0, 0.25) 70%
+      ), var(--yellow);
+      -webkit-mask: repeating-linear-gradient(90deg, #000 0 9px, transparent 9px 12px);
+      mask: repeating-linear-gradient(90deg, #000 0 9px, transparent 9px 12px);
+      transition: width 0.6s steps(6, end);
+    }
+
+    .pcount {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      z-index: 1;
+      transform: translateY(-50%);
+      font-family: ui-monospace, "Courier New", monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 1px 1px 0 var(--ink);
+    }
+
+    .thumb {
+      position: absolute;
+      top: 50%;
+      left: min(calc(var(--pg) * 1%), 88%);
+      z-index: 2;
+      width: var(--thumb);
+      height: var(--thumb);
+      transform: translate(-50%, -50%);
+      transition: left 0.8s cubic-bezier(0.4, 0.1, 0.2, 1);
+    }
+
+    .thumb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      rotate: 100deg;
+      filter: drop-shadow(0 3px 4px rgba(0, 1, 129, 0.45));
+    }
+
+    .thumb:not(.has-img) {
+      --thumb: 22px;
+
+      border-radius: 50%;
+      background: var(--indigo);
+      box-shadow: 0 0 0 3px #fff;
+    }
+
+    .thumb.is-key.bump {
+      animation: keyBump 0.7s ease;
+    }
+
+    @keyframes keyBump {
+      30%  { rotate: -22deg; }
+      60%  { rotate: 10deg; }
+      100% { rotate: 0deg; }
+    }
+
+    .thumb.is-ball {
+      transform: translate(-50%, -50%) rotate(var(--rot));
+      transition:
+        left 0.8s cubic-bezier(0.4, 0.1, 0.2, 1),
+        transform 0.8s cubic-bezier(0.4, 0.1, 0.2, 1);
+    }
+
+    .photo {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      height: clamp(150px, 24vh, 210px);
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #6f6bf3, #412cdf 60%, #2a1fb5) center / cover;
+    }
+
+    .photo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(70, 48, 222, 0.85) 0%,
+        rgba(70, 48, 222, 0.4) 30%,
+        rgba(70, 48, 222, 0) 55%
+      );
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      -webkit-mask-image: linear-gradient(to top, #000 0%, #000 25%, transparent 60%);
+      mask-image: linear-gradient(to top, #000 0%, #000 25%, transparent 60%);
+    }
+
+    .caption {
+      position: relative;
+      width: 100%;
+      padding: 0 14px 12px;
+      text-align: center;
+    }
+
+    h2 {
+      margin: 0;
+      font-family: var(--font-title);
+      font-size: 13px;
+      font-weight: var(--title-weight);
+      line-height: 1.25;
+      color: var(--gold);
+      -webkit-text-stroke: 4px #3a28c9;
+      paint-order: stroke fill;
+      text-shadow: 0 2px 0 rgba(0, 0, 80, 0.5);
+    }
+
+    .w {
+      display: inline-block;
+      margin-right: 0.28em;
+      animation: word 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    }
+
+    @keyframes word {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+    }
+
+    .opts {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 14px 0 8px;
+    }
+
+    .slot {
+      --k: 0;
+
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      animation: blockIn 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.1) backwards;
+    }
+
+    @keyframes blockIn {
+      from {
+        opacity: 0;
+        transform: translateY(26px);
+      }
+    }
+
+    .rev {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 14px;
+      background: linear-gradient(90deg, #ffc82f, #ffe48a);
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink);
+      opacity: calc(0.3 + var(--k) * 0.7);
+    }
+
+    .slot.ready .rev {
+      background: #fff3c4;
+    }
+
+    .xb {
+      width: 28px;
+      height: 28px;
+      transform: rotate(calc(var(--k) * 90deg));
+    }
+
+    .xb .kb {
+      width: 100%;
+      height: 100%;
+    }
+
+    .blk {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: #fff;
+      color: var(--ink);
+      cursor: grab;
+      touch-action: pan-y;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.35s cubic-bezier(0.3, 1.5, 0.5, 1);
+    }
+
+    .blk.drag {
+      cursor: grabbing;
+      transition: none;
+    }
+
+    .ltr {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .txt {
+      flex: 1;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .chev {
+      flex: none;
+      letter-spacing: -2px;
+      font-weight: 800;
+      color: var(--indigo);
+      opacity: 0.6;
+      animation: chev 1.6s ease-in-out infinite;
+    }
+
+    @keyframes chev {
+      50% {
+        opacity: 1;
+        transform: translateX(5px);
+      }
+    }
+
+    .footer {
+      margin: auto 0 0;
+      padding-top: 14px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--gold);
+      text-shadow: 0 2px 0 rgba(0, 1, 129, 0.7);
+    }
+
+    .balls {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      max-width: 480px;
+      margin: 0 auto;
+      pointer-events: none;
+    }
+
+    body:not(.in-quiz) .balls {
+      display: none;
+    }
+
+    .ball {
+      position: absolute;
+      width: 45px;
+      height: auto;
+      filter: drop-shadow(0 6px 8px rgba(0, 0, 60, 0.45));
+      animation: ballFloat 6s ease-in-out infinite alternate;
+    }
+
+    .ball-r {
+      right: -20px;
+      top: 24%;
+      rotate: 12deg;
+    }
+
+    .ball-l {
+      left: -20px;
+      bottom: 10%;
+      width: 50px;
+      rotate: -18deg;
+      animation-duration: 7.5s;
+      animation-direction: alternate-reverse;
+    }
+
+    @keyframes ballFloat {
+      from { translate: 0 -8px; }
+      to   { translate: 0 8px; }
+    }
+
+    #reveal {
+      position: fixed;
+      inset: 0;
+      z-index: 15;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 1, 129, 0.5), rgba(0, 1, 129, 0.92));
+    }
+
+    #reveal.on {
+      display: flex;
+    }
+
+    #rstage {
+      position: relative;
+      width: 0;
+      height: 0;
+    }
+
+    #rstage .kb {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    #rstage {
+      position: relative;
+      width: 0;
+      height: 0;
+    }
+
+    #rstage .rkey {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-origin: 50% 50%;
+    }
+
+    #rstage .rkey .kb {
+      width: 100%;
+      height: 100%;
+    }
+
+    .kmask {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        145deg,
+        color-mix(in srgb, var(--kc) 70%, #fff),
+        var(--kc) 55%,
+        color-mix(in srgb, var(--kc) 70%, #000)
+      );
+      -webkit-mask: var(--kimg) center / contain no-repeat;
+      mask: var(--kimg) center / contain no-repeat;
+    }
+
+    #rtext {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 18%;
+      text-align: center;
+      font-family: var(--font-title);
+      font-size: 20px;
+      font-weight: var(--title-weight);
+      color: var(--cream);
+    }
+
+    #rtext img {
+      display: block;
+      width: min(250px, 72vw);
+      height: auto;
+      margin: 0 auto;
+      pointer-events: none;
+    }
+
+    #flash {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #result {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      flex-direction: column;
+      background: #442fde;
+    }
+
+    #result.on {
+      display: flex;
+      animation: fade 0.7s ease both;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; }
+    }
+
+    #result::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--res-bg) center / cover no-repeat;
+      filter: blur(30px) brightness(0.8);
+      transform: scale(1.2);
+    }
+
+    .resbox,
+    .acts {
+      position: relative;
+    }
+
+    .resbox {
+      flex: 1;
+      min-height: 0;
+    }
+
+    #resImg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .acts {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .acts button {
+      flex: 1;
+      max-width: 160px;
+      padding: 12px;
+      border: 2px solid #fff3c4;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #ffe48a, #f2c63c);
+      box-shadow: 0 4px 0 #b88f14, 0 8px 16px rgba(0, 1, 129, 0.35);
+      font-weight: 800;
+      color: #1a1196;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .acts button:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #b88f14, 0 3px 8px rgba(0, 1, 129, 0.35);
+    }
+
+    .acts .ghost {
+      border-color: #ffe48a;
+      background: #5a46ea;
+      box-shadow: 0 4px 0 #2a1fb5, 0 8px 16px rgba(0, 1, 129, 0.35);
+      color: #ffe48a;
+    }
+
+    .acts .ghost:active {
+      box-shadow: 0 1px 0 #2a1fb5, 0 3px 8px rgba(0, 1, 129, 0.35);
+    }
+
+    #fx {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      pointer-events: none;
+    }
+
+    @media (min-width: 769px) {
+      .top {
+        max-width: none;
+        padding-left: 32px;
+        padding-right: 32px;
+        padding-top: 20px;
+      }
+
+      .logo img {
+        width: 100px;
+      }
+
+      .app {
+        scrollbar-width: none;
+      }
+
+      .app::-webkit-scrollbar {
+        display: none;
+      }
+
+      .frame {
+        margin-top: 30px;
+      }
+
+      .photo {
+        height: clamp(190px, 28vh, 260px);
+      }
+
+      .opts {
+        gap: 8px;
+        margin: 12px 0 6px;
+      }
+
+      .blk {
+        padding: 8px 12px;
+      }
+
+      .footer {
+        padding-top: 8px;
+      }
+
+      .ball-r { right: -34px; }
+      .ball-l { left: -34px; }
+
+      #resImg {
+      object-fit: contain;
+    }
+    }
+
+    @media (max-width: 768px) {
+      .logo img {
+        width: 70px;
+      }
+    }
+
+    @media (max-height: 720px) {
+      .txt {
+        font-size: 12px;
+      }
+
+      .blk {
+        padding: 9px 12px;
+      }
+
+      .opts {
+        gap: 8px;
+      }
+
+      .tab {
+        top: -45px;
+        font-size: 150px;
+      }
+
+      .frame {
+        margin-top: 32px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .orbit,
+      .cover-card,
+      .start,
+      .start::after,
+      .chev,
+      .w,
+      .slot,
+      .ball,
+      .kb.glow {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="fx"></canvas>
+
+  <div class="balls" aria-hidden="true">
+    <img class="ball ball-r" src="assets/Bobinski Ball.png" alt="" draggable="false" onerror="this.remove()">
+    <img class="ball ball-l" src="assets/Bobinski Ball.png" alt="" draggable="false" onerror="this.remove()">
+  </div>
+
+  <header class="top">
+    <button class="back" id="backBtn" type="button" aria-label="Back">‹</button>
+
+    <a class="logo" href="Personality Quiz.html">
+      <img src="assets/Logo.png" alt="Logo">
+    </a>
+  </header>
+
+  <main class="app">
+
+    <section class="view on" id="cover">
+      <div class="stage">
+        <div class="orbit" id="orbit"></div>
+        <div class="cover-card" id="coverCard"></div>
+      </div>
+
+      <h1 id="title"></h1>
+      <p class="subtitle" id="subtitle"></p>
+
+      <button class="start" id="startBtn" type="button">Start</button>
+    </section>
+
+    <section class="view" id="quiz">
+      <div class="frame">
+        <img class="tab" src="assets/Question.png" alt="Question" draggable="false">
+
+        <div class="card">
+          <div class="pbar" id="pbar">
+            <div class="pfill"></div>
+            <img class="loading" id="loadingImg" src="assets/Loading font.png" alt="Loading" draggable="false">
+            <span class="pcount" id="pcount"></span>
+            <div class="thumb" id="thumb"></div>
+          </div>
+
+          <div class="photo" id="photo">
+            <div class="caption">
+              <h2 id="qText"></h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="opts" id="opts"></div>
+
+      <p class="footer" id="footer"></p>
+    </section>
+
+  </main>
+
+  <section id="reveal">
+    <div id="rstage"></div>
+    <div id="rtext"></div>
+  </section>
+
+  <div id="flash"></div>
+
+  <section id="result">
+    <div class="resbox">
+      <img id="resImg" alt="Quiz result">
+    </div>
+
+    <div class="acts">
+      <button id="dlBtn" type="button">Download</button>
+      <button id="shBtn" type="button">Share</button>
+      <button id="retryBtn" class="ghost" type="button">Replay</button>
+    </div>
+  </section>
+
+  <script>
+    const TITLE = "Which Coraline Character Are You?";
+    const SUBTITLE = "Answer these questions and find the character you're most like.";
+    const FOOTER = "2026. Mirrors of Midnight. All Rights Reserved.";
+
+    const COVER_IMG = "assets/Quiz/Cover.jpg";
+    const QUESTION_IMG = n => "assets/Quiz/Q" + n + ".jpg";
+
+    const PROGRESS_THUMB = "key";
+    const KEY_IMG = "assets/Key.png";
+    const MATCH_TEXT_IMG = "assets/Resident Matched!.png";
+    const BALL_IMG = "assets/Quiz/Ball.png";
+
+    const BUTTONS = [
+      { src: "assets/Button_Light Blue.png", filter: "", glow: "120, 200, 255" },
+      { src: "assets/Button_Pink.png", filter: "", glow: "255, 105, 180" },
+      { src: "assets/Button_Vermillion.png", filter: "", glow: "227, 66, 52" },
+      { src: "assets/Button_Chartreuse.png", filter: "", glow: "127, 255, 0" },
+      { src: "assets/Button_Purple.png", filter: "", glow: "185, 150, 255" },
+      { src: "assets/Button_Yellow.png", filter: "", glow: "255, 217, 58" },
+      { src: "assets/Button_Black.png", filter: "", glow: "255, 255, 255" }
+    ];
+
+
+    const SWIPE_BUTTON = {
+      src: "assets/Magic Stone.png",
+      filter: ""
+    };
+
+    const COLORS = [
+      "#b8b8ff",
+      "#ff7ac8",
+      "#ff5a2e",
+      "#c8e63c",
+      "#a35cff",
+      "#3da0ff",
+      "#ffd93a"
+    ];
+
+    const CHARACTERS = [
+      { name: "Coraline",     img: "assets/Quiz/Coraline.png" },
+      { name: "Other Mother", img: "assets/Quiz/Beldam.png" },
+      { name: "Other Father", img: "assets/Quiz/Other Father.png" },
+      { name: "The Cat",      img: "assets/Quiz/Vermin.png" },
+      { name: "Wybie",        img: "assets/Quiz/Wybie.png" },
+      { name: "Mr. Bobinsky", img: "assets/Quiz/Bobinsky.png" },
+      { name: "April Spink",  img: "assets/Quiz/April Spink.png" }
+    ];
+
+    const QUESTIONS = [
+      {
+        q: "You find a small door in your house that shouldn't be there. What would you do?",
+        img: "assets/Quiz/Q1.jpeg",
+        o: [
+          "Open it, obviously. I wanna know where it goes.",
+          "Find out why it was built. If it's dangerous, I'll make sure it's sealed away and nobody finds out about it.",
+          "Is that a door to different world? A secret door? (Proceeds to make a song about it without even bothered to check what’s behind it)",
+          "Sus... Why would there be a door there? I’d try to ignore it.",
+          "Ask my parents about it, and if they tells me not to open it... I’d probably listen."
+        ],
+        c: [0, 1, 2, 3, 4]
+      },
+      {
+        q: "Someone gives you a doll that look exactly like you. What do you do?",
+        img: "assets/Quiz/Q2.jpg",
+        o: [
+          "What a cute doll! *keep it*",
+          "Secretly burn it, just in case something happens because of it.",
+          "Oh, wow... That’s weird. Uh, thanks, I guess?",
+          "Even a doll me is still THIS cool ^___^",
+          "Keep an eye on it. A doll like that doesn't appear for no reason."
+        ],
+        c: [2, 3, 4, 5, 6]
+      },
+      {
+        q: "Which kind of strange neighbor would you probably get along with?",
+        img: "assets/Quiz/Q3.jpeg",
+        o: [
+          "As long as they can make me laugh...?",
+          "Someone who plays strange music.",
+          "Like, the kind of person who’d actually stop to look at a banana slug.",
+          "Someone who reads tarot. I’d be curious to see what they’d say about me.",
+          "I'd rather live without getting close to anyone than have to deal with strange people."
+        ],
+        c: [0, 2, 4, 6, 1]
+      },
+      {
+        q: "If you found a talking cat, what would you do?",
+        img: "assets/Quiz/Q4.png",
+        o: [
+          "Trade stories, maybe the cat has good stories. I would give it some cheese.",
+          "Just let it be? I've seen something even weirder.",
+          "Tell it to shut up.",
+          "Talk to it and try to make it my friend.",
+          "Ask why it's talking."
+        ],
+        c: [5, 3, 1, 0, 4]
+      },
+      {
+        q: "What's your biggest pet peeve?",
+        img: "assets/Quiz/Q5.jpg",
+        o: [
+          "People who don't appreciate everything I do for them.",
+          "People who complain but do nothing about it. Get up! Do something!",
+          "People who refuse to listen.",
+          "People who make everyone feel like they’re walking on eggshells.",
+          "Being ignored."
+        ],
+        c: [1, 5, 6, 2, 0]
+      },
+      {
+        q: "How do you like when you're arguing with someone?",
+        img: "assets/Quiz/Q6.jpg",
+        o: [
+          "Say what I think and make sure the other person hears me.",
+          "Try to keep everyone happy. If I can't, I'll find a way to hint at what I really think.",
+          "Say what needs to be said and leave. I'm not arguing all day.",
+          "If problem can be fixed, we fix it! No need for talking nonsense.",
+          "Be nice first. If that doesn't work, I'll use a more forceful approach."
+        ],
+        c: [6, 2, 3, 5, 1]
+      },
+      {
+        q: "Your ideal home would be…",
+        img: "assets/Quiz/Q7.jpg",
+        o: [
+          "Somewhere with enough space to ride my bike around.",
+          "Perfect in every way.",
+          "Big enough for exercise and throw a party. Plenty of food too (important!!!)",
+          "A place with lots of interesting things to explore.",
+          "A cozy little place where I can sit with a cup of tea and watch my favorite movies."
+        ],
+        c: [4, 1, 5, 0, 6]
+      },
+      {
+        q: "What kind of game do you like?",
+        img: "assets/Quiz/Q8.jpg",
+        o: [
+          "Chess.",
+          "Something fun and silly that everyone can enjoy together.",
+          "Honestly? Anything. As long as it's not boring.",
+          "Something that makes me think, like an escape room or a good puzzle.",
+          "Probably a scavenger hunt. I wanna actually go somewhere, not just sit around playing."
+        ],
+        c: [3, 2, 0, 1, 4]
+      },
+      {
+        q: "Pick a superpower.",
+        img: "assets/Quiz/Q9.jpg",
+        o: [
+          "The ability to makes everyone happy.",
+          "Super vision. Imagine how much stuff you could spot from far away.",
+          "Being able to disappear whenever I want.",
+          "Super strength, so that I can lift anything!",
+          "The ability to see the future."
+        ],
+        c: [2, 4, 3, 5, 6]
+      },
+      {
+        q: "How do you show someone you care about them?",
+        img: "assets/Quiz/Q10.jpg",
+        o: [
+          "Give them everything they need and make sure they never have a reason to leave.",
+          "Help them whenever they need me.",
+          "Sit with them and give them some advice.",
+          "Give them food and make sure they are doing okay.",
+          "Stick around. That's usually enough."
+        ],
+        c: [1, 0, 6, 5, 3]
+      }
+    ];
+
+    const $ = id => document.getElementById(id);
+
+    const TOTAL = QUESTIONS.length;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let current = 0;
+    let picked = [];
+    let locked = false;
+    let winner = null;
+    let slots = [];
+    let blocks = [];
+    let hintShown = false;
+
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    function shuffle(list) {
+      const copy = list.slice();
+
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+
+      return copy;
+    }
+
+    function show(viewId) {
+      document.querySelectorAll(".view").forEach(view => {
+        view.classList.toggle("on", view.id === viewId);
+      });
+
+      document.body.classList.toggle("in-quiz", viewId === "quiz");
+      document.body.classList.toggle("revealing", viewId === "");
+      document.querySelector(".app").scrollTop = 0;
+    }
+
+    function loadImage(src, onLoad) {
+      if (!src) return;
+
+      const img = new Image();
+      img.alt = "";
+      img.draggable = false;
+      img.onload = () => onLoad(img);
+      img.src = src;
+    }
+
+    function makeButton(config) {
+      const el = document.createElement("span");
+
+      el.className = "kb";
+
+      loadImage(config && config.src, img => {
+      if (config.filter) img.style.filter = config.filter;
+
+      if (config.glow) {
+      el.style.setProperty("--g", config.glow);
+      el.classList.add("glow");
+    }
+
+      el.appendChild(img);
+    });
+
+    return el;
+    }
+
+      function makeRevealButton(size, config, color) {
+      const el = document.createElement("span");
+
+      el.className = "rkey";
+      el.style.width = size + "px";
+      el.style.height = size + "px";
+      el.style.margin = -size / 2 + "px 0 0 " + -size / 2 + "px";
+      el.appendChild(makeButton(config, color));
+
+      return el;
+    }
+
+    const canvas = $("fx");
+    const ctx = canvas.getContext("2d");
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
+
+    let particles = [];
+    let sparksRunning = false;
+
+    function resizeCanvas() {
+      canvas.width = innerWidth * DPR;
+      canvas.height = innerHeight * DPR;
+    }
+
+    resizeCanvas();
+    addEventListener("resize", resizeCanvas);
+
+    function burst(x, y, color, count) {
+      if (reduceMotion) return;
+
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 6;
+
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1.5,
+          age: 0,
+          life: 35 + Math.random() * 35,
+          color: Math.random() < 0.35 ? "#fff" : color,
+          size: 2 + Math.random() * 3
+        });
+      }
+
+      if (!sparksRunning) {
+        sparksRunning = true;
+        requestAnimationFrame(drawSparks);
+      }
+    }
+
+    function drawSparks() {
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+      particles = particles.filter(p => p.age < p.life);
+
+      particles.forEach(p => {
+        p.age++;
+        p.vy += 0.14;
+        p.vx *= 0.985;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        ctx.globalAlpha = 1 - p.age / p.life;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.globalAlpha = 1;
+
+      if (particles.length) {
+        requestAnimationFrame(drawSparks);
+      } else {
+        sparksRunning = false;
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+      }
+    }
+
+    $("title").textContent = TITLE;
+    $("subtitle").textContent = SUBTITLE;
+    $("footer").textContent = FOOTER;
+
+    if (COVER_IMG) {
+      $("coverCard").style.backgroundImage = "url('" + COVER_IMG + "')";
+    }
+
+    CHARACTERS.forEach((character, i) => {
+      const size = 22 + (i % 3) * 8;
+      const button = makeButton(BUTTONS[i], COLORS[i]);
+
+      button.style.width = size + "px";
+      button.style.height = size + "px";
+      button.style.marginLeft = -size / 2 + "px";
+      button.style.marginTop = -size / 2 + "px";
+      button.style.setProperty("--a", (i * 360 / CHARACTERS.length) + "deg");
+
+      $("orbit").appendChild(button);
+    });
+
+    const LOADING_MAX = 10;
+    const loadingSlots = [];
+
+    function loadedFrames() {
+      return loadingSlots.filter(Boolean);
+    }
+
+    for (let n = 0; n < LOADING_MAX; n++) {
+      const src = "assets/Loading font" + (n ? " " + n : "") + ".png";
+      const probe = new Image();
+
+      probe.onload = () => {
+        loadingSlots[n] = src;
+
+        if (reduceMotion) {
+          const list = loadedFrames();
+          $("loadingImg").src = list[list.length - 1];
+        }
+      };
+      probe.src = src;
+    }
+
+    if (!reduceMotion) {
+      let frame = 0;
+
+      setInterval(() => {
+        const list = loadedFrames();
+        if (list.length < 2) return;
+
+        frame = (frame + 1) % list.length;
+        $("loadingImg").src = list[frame];
+      }, 450);
+    }
+
+    const thumb = $("thumb");
+    const useBall = PROGRESS_THUMB === "ball";
+
+    thumb.classList.add(useBall ? "is-ball" : "is-key");
+
+    loadImage(useBall ? BALL_IMG : KEY_IMG, img => {
+      thumb.classList.add("has-img");
+      thumb.appendChild(img);
+    });
+
+    function setProgress(percent) {
+      const bar = $("pbar");
+
+      bar.style.setProperty("--pg", percent.toFixed(1));
+      bar.style.setProperty("--rot", (percent * 7.2).toFixed(0) + "deg");
+
+      document.body.style.setProperty("--p", (percent / 100).toFixed(2));
+
+      if (!useBall) {
+        thumb.classList.remove("bump");
+        void thumb.offsetWidth;
+        thumb.classList.add("bump");
+      }
+    }
+
+    function renderQuestion() {
+      const question = QUESTIONS[current];
+      const shownIndex = current;
+
+      setProgress((current + 1) / TOTAL * 100);
+      $("pcount").textContent = (current + 1) + "/" + TOTAL;
+
+      const heading = $("qText");
+      heading.innerHTML = "";
+
+      question.q.split(" ").forEach((word, i) => {
+        const span = document.createElement("span");
+
+        span.className = "w";
+        span.textContent = word;
+        span.style.animationDelay = i * 28 + "ms";
+
+        heading.appendChild(span);
+      });
+
+      const photo = $("photo");
+      const photoSrc = question.img || QUESTION_IMG(current + 1);
+
+      photo.style.backgroundImage = "";
+
+      loadImage(photoSrc, () => {
+        if (shownIndex === current) {
+          photo.style.backgroundImage = "url('" + photoSrc + "')";
+        }
+      });
+
+      const box = $("opts");
+      box.innerHTML = "";
+      slots = [];
+      blocks = [];
+
+      const options = question.o.map((text, i) => ({ t: text, c: question.c[i] }));
+
+      shuffle(options).forEach((option, i) => {
+        const slot = document.createElement("div");
+
+        slot.className = "slot";
+        slot.style.animationDelay = 150 + i * 70 + "ms";
+        slot.innerHTML =
+          '<div class="rev">' +
+            '<span class="xb"></span>' +
+            '<span>Pick this one</span>' +
+          '</div>' +
+          '<div class="blk" role="button" tabindex="0">' +
+            '<span class="ltr"></span>' +
+            '<span class="txt"></span>' +
+            '<span class="chev">›››</span>' +
+          '</div>';
+
+        slot.querySelector(".xb").appendChild(makeButton(SWIPE_BUTTON));
+        slot.querySelector(".ltr").textContent = "ABCDE"[i];
+        slot.querySelector(".txt").textContent = option.t;
+
+        const block = slot.querySelector(".blk");
+        block._option = option;
+        block._slot = slot;
+
+        enableSwipe(block, i);
+
+        box.appendChild(slot);
+        slots.push(slot);
+        blocks.push(block);
+      });
+
+      if (current === 0 && !hintShown && !reduceMotion) {
+        hintShown = true;
+        setTimeout(() => wiggle(blocks[0], 34), 1100);
+      }
+    }
+
+    function wiggle(block, distance) {
+      if (!block || locked) return;
+
+      block.animate(
+        [
+          { transform: "translateX(0)" },
+          { transform: "translateX(" + distance + "px)" },
+          { transform: "translateX(0)" }
+        ],
+        { duration: 700, easing: "ease-in-out" }
+      );
+
+      block._slot.animate(
+        [{ "--k": 0 }, { "--k": 0.6 }, { "--k": 0 }],
+        { duration: 700 }
+      );
+    }
+
+    function enableSwipe(block, index) {
+      const slot = block._slot;
+
+      let startX = 0;
+      let startY = 0;
+      let active = false;
+      let dragging = false;
+      let threshold = 120;
+
+      block.addEventListener("pointerdown", event => {
+        if (locked) return;
+
+        active = true;
+        dragging = false;
+        startX = event.clientX;
+        startY = event.clientY;
+        threshold = Math.min(130, slot.getBoundingClientRect().width * 0.42);
+      });
+
+      block.addEventListener("pointermove", event => {
+        if (!active) return;
+
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
+
+        if (!dragging) {
+          if (dx > 8 && Math.abs(dx) > Math.abs(dy)) {
+            dragging = true;
+            block.setPointerCapture(event.pointerId);
+            block.classList.add("drag");
+          } else if (Math.abs(dy) > 10) {
+            active = false;
+            return;
+          } else {
+            return;
+          }
+        }
+
+        const x = dx > 0 ? dx : dx * 0.15;
+        const progress = Math.min(1, Math.max(0, x) / threshold);
+
+        block.style.transform = "translateX(" + x + "px) rotate(" + x * 0.02 + "deg)";
+        slot.style.setProperty("--k", progress.toFixed(2));
+        slot.classList.toggle("ready", progress >= 1);
+      });
+
+      function finishSwipe(event, cancelled) {
+        if (!active) return;
+        active = false;
+
+        if (!dragging) {
+          if (!cancelled) wiggle(block, 22);
+          return;
+        }
+
+        block.classList.remove("drag");
+
+        if (!cancelled && event.clientX - startX >= threshold) {
+          play(index);
+          return;
+        }
+
+        block.style.transform = "";
+        slot.style.setProperty("--k", 0);
+        slot.classList.remove("ready");
+      }
+
+      block.addEventListener("pointerup", event => finishSwipe(event, false));
+      block.addEventListener("pointercancel", event => finishSwipe(event, true));
+
+      block.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " " || event.key === "ArrowRight") {
+          event.preventDefault();
+          play(index);
+        }
+      });
+    }
+
+    async function play(index) {
+      if (locked) return;
+      locked = true;
+
+      const block = blocks[index];
+      const rect = block.getBoundingClientRect();
+
+      slots.forEach((slot, i) => {
+        if (i === index) return;
+
+        slot.animate(
+          [{ opacity: 0, transform: "translateY(16px)" }],
+          { duration: 320, fill: "forwards" }
+        );
+      });
+
+      burst(rect.right - 30, rect.top + rect.height / 2, "#ffd24a", 26);
+
+      const fly = block.animate(
+        [
+          { transform: getComputedStyle(block).transform },
+          { transform: "translateX(" + innerWidth + "px) rotate(6deg)", opacity: 0 }
+        ],
+        {
+          duration: reduceMotion ? 1 : 420,
+          easing: "cubic-bezier(0.5, 0, 0.9, 0.5)",
+          fill: "forwards"
+        }
+      );
+
+      await fly.finished.catch(() => {});
+
+      block._slot.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: "forwards" });
+
+      picked[current] = block._option;
+
+      await sleep(reduceMotion ? 50 : 350);
+
+      if (current < TOTAL - 1) {
+        current++;
+        locked = false;
+        renderQuestion();
+      } else {
+        reveal();
+      }
+    }
+
+    $("backBtn").onclick = () => {
+      if (locked) return;
+
+      if (current === 0) {
+        show("cover");
+        return;
+      }
+
+      picked.pop();
+      current = picked.length;
+      renderQuestion();
+    };
+
+    function pickWinner() {
+      const scores = CHARACTERS.map(() => 0);
+      picked.forEach(option => scores[option.c]++);
+
+      const best = Math.max(...scores);
+      const tied = [];
+
+      scores.forEach((score, i) => {
+        if (score === best) tied.push(i);
+      });
+
+      return {
+        scores,
+        index: tied[Math.floor(Math.random() * tied.length)]
+      };
+    }
+
+    async function reveal() {
+      const { scores, index } = pickWinner();
+
+      winner = CHARACTERS[index];
+      new Image().src = winner.img;
+      
+      $("rtext").getAnimations().forEach(a => a.cancel());
+
+      show("");
+      $("reveal").classList.add("on");
+      $("rtext").textContent = "";
+      new Image().src = MATCH_TEXT_IMG;
+
+      const stage = $("rstage");
+      const radius = Math.min(120, innerWidth * 0.3);
+      const buttons = [];
+
+      stage.innerHTML = "";
+
+      CHARACTERS.forEach((character, i) => {
+        const size = Math.min(84, 34 + scores[i] * 7);
+        const angle = i * 2 * Math.PI / CHARACTERS.length;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        const deg = 0;
+        const key = makeRevealButton(size, BUTTONS[i], COLORS[i]);
+
+        key.style.transform = "translate(" + x + "px," + y + "px) rotate(" + deg + "deg)";
+
+        key._x = x;
+        key._y = y;
+        key._deg = deg;
+        key._size = size;
+
+        stage.appendChild(key);
+        buttons.push(key);
+      });
+
+      const spin = stage.animate(
+        [
+          { transform: "rotate(0deg) scale(1)" },
+          { transform: "rotate(720deg) scale(0.8)", offset: 0.7 },
+          { transform: "rotate(720deg) scale(1)" }
+        ],
+        { duration: reduceMotion ? 1 : 2000, easing: "cubic-bezier(0.6, 0, 0.3, 1)" }
+      );
+
+      await spin.finished.catch(() => {});
+
+      buttons.forEach((button, i) => {
+        if (i === index) return;
+
+        button.animate(
+          [
+            { opacity: 1 },
+            { opacity: 0, transform: "translate(0px, 0px) scale(0)" }
+          ],
+          { duration: 500, fill: "forwards", easing: "ease-in" }
+        );
+      });
+
+      const matchImg = new Image();
+      
+      matchImg.alt = "Resident matched!.";
+      matchImg.draggable = false;
+      matchImg.onerror = () => {
+        $("rtext").textContent = "Resident matched!.";
+      };
+      matchImg.src = MATCH_TEXT_IMG;
+      $("rtext").replaceChildren(matchImg);
+
+      const big = buttons[index];
+
+      const grow = big.animate(
+        [
+          { transform: "translate(" + big._x + "px," + big._y + "px) scale(1)" },
+          { transform: "translate(0px, 0px) scale(" + 230 / big._size + ")" }
+        ],
+        {
+          duration: reduceMotion ? 1 : 900,
+          easing: "cubic-bezier(0.3, 1.3, 0.5, 1)",
+          fill: "forwards"
+        }
+      );
+
+      await grow.finished.catch(() => {});
+
+      burst(innerWidth / 2, innerHeight / 2, COLORS[index], 70);
+      await sleep(reduceMotion ? 50 : 500);
+      
+      const diag = Math.hypot(innerWidth, innerHeight);
+      const zoomScale = diag / (big._size * 0.3) * 1.1;
+
+      $("rtext").animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: "forwards" });
+
+      big.animate(
+        [
+          { transform: "translate(0px, 0px) rotate(0deg) scale(" + 230 / big._size + ")" },
+          { transform: "translate(0px, 0px) rotate(0deg) scale(" + zoomScale + ")" }
+        ],
+        {
+          duration: reduceMotion ? 1 : 900,
+          easing: "cubic-bezier(0.6, 0, 0.9, 0.4)",
+          fill: "forwards"
+        }
+      );
+
+      const flash = $("flash").animate(
+        [{ opacity: 0 }, { opacity: 1, offset: 0.45 }, { opacity: 0 }],
+        { duration: reduceMotion ? 1 : 700 }
+      );
+
+      await sleep(reduceMotion ? 1 : 300);
+
+      $("resImg").src = winner.img;
+      $("resImg").alt = winner.name;
+      $("reveal").classList.remove("on");
+      $("result").classList.add("on");
+
+      await flash.finished.catch(() => {});
+    }
+
+    $("startBtn").onclick = () => {
+      current = 0;
+      picked = [];
+      locked = false;
+      winner = null;
+
+      show("quiz");
+      renderQuestion();
+    };
+
+    $("retryBtn").onclick = () => {
+      $("result").classList.remove("on");
+      show("cover");
+    };
+
+    async function getResultBlob() {
+      const response = await fetch(winner.img);
+      return await response.blob();
+    }
+
+    $("dlBtn").onclick = async () => {
+      if (!winner) return;
+
+      const link = document.createElement("a");
+
+      try {
+        link.href = URL.createObjectURL(await getResultBlob());
+      } catch (error) {
+        link.href = winner.img;
+      }
+
+      link.download = "quiz-result-" + winner.name.replace(/\s+/g, "-").toLowerCase();
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    };
+
+    $("shBtn").onclick = async () => {
+      if (!winner) return;
+
+      try {
+        const blob = await getResultBlob();
+        const extension = blob.type.split("/")[1] || "jpg";
+        const file = new File([blob], "quiz-result." + extension, { type: blob.type });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: TITLE });
+          return;
+        }
+      } catch (error) {
+        if (error && error.name === "AbortError") return;
+      }
+
+      try {
+        await navigator.share({ title: TITLE, url: location.href });
+      } catch (error) {
+      }
+    };
+  </script>
+
+</body>
+
+</html>
