@@ -174,10 +174,25 @@
       aspect-ratio: 1;
     }
 
+    .mute {
+    position: fixed;
+    right: 14px;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    z-index: 9;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: rgba(0, 1, 129, 0.55);
+    font-size: 18px;
+    line-height: 1;
+    }
+
     .orbit {
       position: absolute;
       inset: 0;
       animation: spin 26s linear infinite;
+      display: none;
     }
 
     .orbit .kb {
@@ -191,15 +206,47 @@
       to { transform: rotate(360deg); }
     }
 
-    .cover-card {
-      width: 56%;
-      aspect-ratio: 4 / 5;
-      border: 3px solid #fff;
-      border-radius: 24px;
-      background: linear-gradient(135deg, #023fcd, #412cdf 45%, #aa82ff 75%, #e8a0ff) center / cover;
-      box-shadow: 0 20px 50px rgba(0, 1, 129, 0.55);
-      animation: floaty 5s ease-in-out infinite;
-    }
+.cover-frame {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 56%;
+  aspect-ratio: 4 / 5;
+  border: 3px solid #fff;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #023fcd, #412cdf 45%, #aa82ff 75%, #e8a0ff);
+  box-shadow: 0 20px 50px rgba(0, 1, 129, 0.55);
+  animation: floaty 5s ease-in-out infinite;
+  overflow: hidden;
+}
+
+.cover-char {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: none;
+}
+
+.peeks {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.peek {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34%;
+  height: auto;
+  opacity: 0;
+  transform-origin: 50% 100%;
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 90%);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 90%);
+}
 
     @keyframes floaty {
       0%, 100% { transform: translateY(0) rotate(-3deg); }
@@ -880,6 +927,8 @@
 
 <body>
 
+  <button class="mute" id="muteBtn" type="button" aria-label="Sound">🔊</button>
+
   <canvas id="fx"></canvas>
 
   <div class="balls" aria-hidden="true">
@@ -899,8 +948,11 @@
 
     <section class="view on" id="cover">
       <div class="stage">
-        <div class="orbit" id="orbit"></div>
-        <div class="cover-card" id="coverCard"></div>
+      <div class="orbit" id="orbit"></div>
+      <div class="peeks" id="peeks"></div>
+      <div class="cover-frame">
+      <img class="cover-char" src="assets/Characters/Coraline.png" alt="" draggable="false">
+      </div>
       </div>
 
       <h1 id="title"></h1>
@@ -965,6 +1017,7 @@
 
     const PROGRESS_THUMB = "key";
     const KEY_IMG = "assets/Key.png";
+    const MUSIC_SRC = "assets/Installation.mp3";
     const MATCH_TEXT_IMG = "assets/Resident Matched!.png";
     const BALL_IMG = "assets/Quiz/Ball.png";
 
@@ -1128,6 +1181,27 @@
     ];
 
     const $ = id => document.getElementById(id);
+    
+    const music = new Audio(MUSIC_SRC);
+      music.loop = true;
+      music.volume = 0.5;
+
+    function startMusic() {
+      music.play().catch(() => {});
+    }
+
+    document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        music.pause();
+    } else if (!music.paused || music.currentTime > 0) {
+        music.play().catch(() => {});
+    }
+    });
+
+    $("muteBtn").onclick = () => {
+    music.muted = !music.muted;
+    $("muteBtn").textContent = music.muted ? "🔇" : "🔊";
+    };
 
     const TOTAL = QUESTIONS.length;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1278,9 +1352,64 @@
     $("subtitle").textContent = SUBTITLE;
     $("footer").textContent = FOOTER;
 
-    if (COVER_IMG) {
-      $("coverCard").style.backgroundImage = "url('" + COVER_IMG + "')";
-    }
+const PEEKS = [
+  { src: "assets/Characters/April Spinks.png",    r: -27, y: 10 },
+  { src: "assets/Characters/Beldam.png",         r: 25, y: 5 },
+  { src: "assets/Characters/Other Bobinsky.png", r: -18, y: -5 },
+  { src: "assets/Characters/Other Father.png",   r: 29, y: 14 },
+  { src: "assets/Characters/Wybie.png",          r: -25, y: 15},
+  { src: "assets/Characters/Vermin.png",         r: 24 }
+];
+
+const peekEls = PEEKS.map(p => {
+  const img = new Image();
+
+  img.className = "peek";
+  img.draggable = false;
+  img.src = p.src;
+  img.onerror = () => img.remove();
+
+  $("peeks").appendChild(img);
+  return img;
+});
+
+let peekN = 0;
+
+function nextPeek() {
+  if (!$("cover").classList.contains("on")) return;
+
+  const i = peekN % PEEKS.length;
+  const p = PEEKS[i];
+  const el = peekEls[i];
+  const s = PEEK_SPOTS[peekN % PEEK_SPOTS.length];
+
+  const x = s.x + Math.sign(s.x) * (p.dx || 0);
+  const y = s.y + (p.y || 0);
+  const r = p.r !== undefined ? p.r : s.r;
+
+  const base = "translate(-50%, -50%) ";
+  const hide = base + "translate(0%, 0%) rotate(0deg)";
+  const show = base + "translate(" + x + "%, " + y + "%) rotate(" + r + "deg)";
+
+  el.animate(
+    [
+      { transform: hide, opacity: 0 },
+      { transform: show, opacity: 1, offset: 0.25 },
+      { transform: show, opacity: 1, offset: 0.7 },
+      { transform: hide, opacity: 0 }
+    ],
+    { duration: 2200, easing: "ease-in-out" }
+  );
+
+  peekN++;
+}
+
+if (!reduceMotion) setInterval(nextPeek, 1700);
+
+const PEEK_SPOTS = [
+  { x: -60, y: 5, r: -35 },
+  { x: 60, y: 5, r: 35 }
+];
 
     CHARACTERS.forEach((character, i) => {
       const size = 22 + (i % 3) * 8;
@@ -1725,6 +1854,7 @@
     }
 
     $("startBtn").onclick = () => {
+      startMusic();
       current = 0;
       picked = [];
       locked = false;
