@@ -62,12 +62,20 @@
       color: #fff;
       overflow: hidden;
       background-color: #0e3288;
-      background-attachment: fixed;
-      background-image:
-        radial-gradient(ellipse at 80% 15%, rgba(111, 107, 243, 0.55) 0%, rgba(111, 107, 243, 0.18) 35%, transparent 70%),
-        radial-gradient(ellipse at 15% 35%, #412cdf 0%, transparent 65%),
-        radial-gradient(ellipse at 90% 60%, #162e9c 0%, transparent 65%),
-        radial-gradient(ellipse at 25% 90%, #162e9c 0%, transparent 60%);
+      background-image: url('assets/BG 1 Verti agak naik.png');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+    
+    img,
+    canvas {
+      -webkit-user-drag: none;
+      -webkit-touch-callout: none;
     }
 
     .top {
@@ -206,47 +214,47 @@
       to { transform: rotate(360deg); }
     }
 
-.cover-frame {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  width: 56%;
-  aspect-ratio: 4 / 5;
-  border: 3px solid #fff;
-  border-radius: 24px;
-  background: linear-gradient(135deg, #023fcd, #412cdf 45%, #aa82ff 75%, #e8a0ff);
-  box-shadow: 0 20px 50px rgba(0, 1, 129, 0.55);
-  animation: floaty 5s ease-in-out infinite;
-  overflow: hidden;
-}
+    .cover-frame {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      width: 56%;
+      aspect-ratio: 4 / 5;
+      border: 3px solid #fff;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #023fcd, #412cdf 45%, #aa82ff 75%, #e8a0ff);
+      box-shadow: 0 20px 50px rgba(0, 1, 129, 0.55);
+      animation: floaty 5s ease-in-out infinite;
+      overflow: hidden;
+    }
 
-.cover-char {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: none;
-}
+    .cover-char {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: none;
+    }
 
-.peeks {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
+    .peeks {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
 
-.peek {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 34%;
-  height: auto;
-  opacity: 0;
-  transform-origin: 50% 100%;
-  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 90%);
-  mask-image: linear-gradient(to bottom, #000 55%, transparent 90%);
-}
+    .peek {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 34%;
+      height: auto;
+      opacity: 0;
+      transform-origin: 50% 100%;
+      -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 90%);
+      mask-image: linear-gradient(to bottom, #000 55%, transparent 90%);
+    }
 
     @keyframes floaty {
       0%, 100% { transform: translateY(0) rotate(-3deg); }
@@ -361,7 +369,7 @@
       box-shadow: 
         0 0 0 2px #fff,
         0 5px 0 2px var(--night);
-      }
+    }
 
     .pfill {
       position: absolute;
@@ -682,12 +690,6 @@
       top: 0;
     }
 
-    #rstage {
-      position: relative;
-      width: 0;
-      height: 0;
-    }
-
     #rstage .rkey {
       position: absolute;
       left: 0;
@@ -832,6 +834,10 @@
     }
 
     @media (min-width: 769px) {
+      body {
+        background-image: url('assets/BG 1 Horti 169.png');
+      }
+      
       .top {
         max-width: none;
         padding-left: 32px;
@@ -876,8 +882,8 @@
       .ball-l { left: -34px; }
 
       #resImg {
-      object-fit: contain;
-    }
+        object-fit: contain;
+      }
     }
 
     @media (max-width: 768px) {
@@ -948,11 +954,11 @@
 
     <section class="view on" id="cover">
       <div class="stage">
-      <div class="orbit" id="orbit"></div>
-      <div class="peeks" id="peeks"></div>
-      <div class="cover-frame">
-      <img class="cover-char" src="assets/Characters/Cover.png" alt="" draggable="false">
-      </div>
+        <div class="orbit" id="orbit"></div>
+        <div class="peeks" id="peeks"></div>
+        <div class="cover-frame">
+          <img class="cover-char" src="assets/Characters/Cover.png" alt="" draggable="false">
+        </div>
       </div>
 
       <h1 id="title"></h1>
@@ -1030,7 +1036,6 @@
       { src: "assets/Button_Yellow.png", filter: "", glow: "255, 217, 58" },
       { src: "assets/Button_Black.png", filter: "", glow: "255, 255, 255" }
     ];
-
 
     const SWIPE_BUTTON = {
       src: "assets/Magic Stone.png",
@@ -1183,24 +1188,24 @@
     const $ = id => document.getElementById(id);
     
     const music = new Audio(MUSIC_SRC);
-      music.loop = true;
-      music.volume = 0.5;
+    music.loop = true;
+    music.volume = 0.5;
 
     function startMusic() {
       music.play().catch(() => {});
     }
 
     document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
+      if (document.hidden) {
         music.pause();
-    } else if (!music.paused || music.currentTime > 0) {
+      } else if (!music.paused || music.currentTime > 0) {
         music.play().catch(() => {});
-    }
+      }
     });
 
     $("muteBtn").onclick = () => {
-    music.muted = !music.muted;
-    $("muteBtn").textContent = music.muted ? "🔇" : "🔊";
+      music.muted = !music.muted;
+      $("muteBtn").textContent = music.muted ? "🔇" : "🔊";
     };
 
     const TOTAL = QUESTIONS.length;
@@ -1253,20 +1258,20 @@
       el.className = "kb";
 
       loadImage(config && config.src, img => {
-      if (config.filter) img.style.filter = config.filter;
+        if (config.filter) img.style.filter = config.filter;
 
-      if (config.glow) {
-      el.style.setProperty("--g", config.glow);
-      el.classList.add("glow");
+        if (config.glow) {
+          el.style.setProperty("--g", config.glow);
+          el.classList.add("glow");
+        }
+
+        el.appendChild(img);
+      });
+
+      return el;
     }
 
-      el.appendChild(img);
-    });
-
-    return el;
-    }
-
-      function makeRevealButton(size, config, color) {
+    function makeRevealButton(size, config, color) {
       const el = document.createElement("span");
 
       el.className = "rkey";
@@ -1352,64 +1357,64 @@
     $("subtitle").textContent = SUBTITLE;
     $("footer").textContent = FOOTER;
 
-const PEEKS = [
-  { src: "assets/Characters/April Spinks.png",    r: -27, y: 10 },
-  { src: "assets/Characters/Beldam.png",         r: 25, y: 5 },
-  { src: "assets/Characters/Other Bobinsky.png", r: -18, y: -5 },
-  { src: "assets/Characters/Other Father.png",   r: 29, y: 14 },
-  { src: "assets/Characters/Wybie.png",          r: -25, y: 15},
-  { src: "assets/Characters/Vermin.png",         r: 24 }
-];
+    const PEEKS = [
+      { src: "assets/Characters/April Spinks.png",    r: -27, y: 10 },
+      { src: "assets/Characters/Beldam.png",         r: 25, y: 5 },
+      { src: "assets/Characters/Other Bobinsky.png", r: -18, y: -5 },
+      { src: "assets/Characters/Other Father.png",   r: 29, y: 14 },
+      { src: "assets/Characters/Wybie.png",          r: -25, y: 15},
+      { src: "assets/Characters/Vermin.png",         r: 24 }
+    ];
 
-const peekEls = PEEKS.map(p => {
-  const img = new Image();
+    const peekEls = PEEKS.map(p => {
+      const img = new Image();
 
-  img.className = "peek";
-  img.draggable = false;
-  img.src = p.src;
-  img.onerror = () => img.remove();
+      img.className = "peek";
+      img.draggable = false;
+      img.src = p.src;
+      img.onerror = () => img.remove();
 
-  $("peeks").appendChild(img);
-  return img;
-});
+      $("peeks").appendChild(img);
+      return img;
+    });
 
-let peekN = 0;
+    let peekN = 0;
 
-function nextPeek() {
-  if (!$("cover").classList.contains("on")) return;
+    function nextPeek() {
+      if (!$("cover").classList.contains("on")) return;
 
-  const i = peekN % PEEKS.length;
-  const p = PEEKS[i];
-  const el = peekEls[i];
-  const s = PEEK_SPOTS[peekN % PEEK_SPOTS.length];
+      const i = peekN % PEEKS.length;
+      const p = PEEKS[i];
+      const el = peekEls[i];
+      const s = PEEK_SPOTS[peekN % PEEK_SPOTS.length];
 
-  const x = s.x + Math.sign(s.x) * (p.dx || 0);
-  const y = s.y + (p.y || 0);
-  const r = p.r !== undefined ? p.r : s.r;
+      const x = s.x + Math.sign(s.x) * (p.dx || 0);
+      const y = s.y + (p.y || 0);
+      const r = p.r !== undefined ? p.r : s.r;
 
-  const base = "translate(-50%, -50%) ";
-  const hide = base + "translate(0%, 0%) rotate(0deg)";
-  const show = base + "translate(" + x + "%, " + y + "%) rotate(" + r + "deg)";
+      const base = "translate(-50%, -50%) ";
+      const hide = base + "translate(0%, 0%) rotate(0deg)";
+      const show = base + "translate(" + x + "%, " + y + "%) rotate(" + r + "deg)";
 
-  el.animate(
-    [
-      { transform: hide, opacity: 0 },
-      { transform: show, opacity: 1, offset: 0.25 },
-      { transform: show, opacity: 1, offset: 0.7 },
-      { transform: hide, opacity: 0 }
-    ],
-    { duration: 2200, easing: "ease-in-out" }
-  );
+      el.animate(
+        [
+          { transform: hide, opacity: 0 },
+          { transform: show, opacity: 1, offset: 0.25 },
+          { transform: show, opacity: 1, offset: 0.7 },
+          { transform: hide, opacity: 0 }
+        ],
+        { duration: 2200, easing: "ease-in-out" }
+      );
 
-  peekN++;
-}
+      peekN++;
+    }
 
-if (!reduceMotion) setInterval(nextPeek, 1700);
+    if (!reduceMotion) setInterval(nextPeek, 1700);
 
-const PEEK_SPOTS = [
-  { x: -60, y: 5, r: -35 },
-  { x: 60, y: 5, r: 35 }
-];
+    const PEEK_SPOTS = [
+      { x: -60, y: 5, r: -35 },
+      { x: 60, y: 5, r: 35 }
+    ];
 
     CHARACTERS.forEach((character, i) => {
       const size = 22 + (i % 3) * 8;
@@ -1913,6 +1918,9 @@ const PEEK_SPOTS = [
       } catch (error) {
       }
     };
+    
+    document.addEventListener("contextmenu", event => event.preventDefault());
+    document.addEventListener("dragstart", event => event.preventDefault());
   </script>
 
 </body>
